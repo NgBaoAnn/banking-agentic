@@ -1,0 +1,41 @@
+# Assignment reference files (not part of submission)
+docs/
+template/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.local
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/Colab-Backend.ipynb
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+*.log
+
+# Model cache (large files)
+*.bin
+*.safetensors
+*.gguf
