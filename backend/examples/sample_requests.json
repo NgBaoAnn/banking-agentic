@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "description": "Transfer failure — medium priority, direct reply expected",
+    "message": "I tried to send money to my friend yesterday but the transfer failed. The money was deducted from my account but my friend didn't receive it. Can you help me?"
+  },
+  {
+    "id": 2,
+    "description": "Card not received — medium priority, direct reply expected",
+    "message": "I applied for a new debit card two weeks ago but I still haven't received it. Can you check the status of my card delivery?"
+  },
+  {
+    "id": 3,
+    "description": "Blocked account — high priority, should escalate",
+    "message": "My account has been blocked and I cannot access my funds. I need this resolved urgently as I have bills to pay. Please help immediately!"
+  },
+  {
+    "id": 4,
+    "description": "Refund request — medium priority, direct reply expected",
+    "message": "I was charged twice for the same transaction at a restaurant last Friday. I need a refund for the duplicate charge of $45.50."
+  },
+  {
+    "id": 5,
+    "description": "Lost card — high priority, should escalate",
+    "message": "I lost my card yesterday and I'm worried someone might use it. I need to block it right away and get a replacement."
+  },
+  {
+    "id": 6,
+    "description": "Top-up failed — medium priority, might ask for more info",
+    "message": "I tried to top up my account using a card but it failed, what should I do?"
+  },
+  {
+    "id": 7,
+    "description": "Exchange rate inquiry — low priority, direct reply expected",
+    "message": "What is the current exchange rate for USD to EUR? I'm planning to make an international transfer."
+  },
+  {
+    "id": 8,
+    "description": "Suspicious transaction — high priority, should escalate",
+    "message": "I just noticed several transactions on my account that I did not make. Someone might have stolen my card information. This is an emergency!"
+  }
+]
