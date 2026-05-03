@@ -42,3 +42,4 @@ notebooks/Colab-Backend.ipynb
 
 # AI Agents / Skills
 .agents/
+skills-lock.json
