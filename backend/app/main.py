@@ -5,7 +5,9 @@ Registers API routes and initializes the main server.
 
 import logging
 
-from fastapi import FastAPI
+from typing import Annotated
+
+from fastapi import Body, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.schemas import CustomerRequest, AgentResponse
@@ -35,13 +37,13 @@ orchestrator = Orchestrator()
 
 
 @app.get("/health")
-async def health_check():
+def health_check() -> dict:
     """Health check endpoint."""
     return {"status": "ok", "service": "banking-ai-agent"}
 
 
-@app.post("/api/chat", response_model=AgentResponse)
-async def chat(request: CustomerRequest):
+@app.post("/api/chat")
+async def chat(request: Annotated[CustomerRequest, Body()]) -> AgentResponse:
     """
     Process a customer support message through the AI agentic pipeline.
 
