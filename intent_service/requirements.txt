@@ -1,7 +1,0 @@
-grpcio==1.64.0
-grpcio-tools==1.64.0
-torch>=2.0.0
-transformers>=4.40.0
-peft>=0.10.0
-accelerate>=0.30.0
-huggingface-hub>=0.23.0
