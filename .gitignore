@@ -39,3 +39,6 @@ notebooks/Colab-Backend.ipynb
 *.bin
 *.safetensors
 *.gguf
+
+# AI Agents / Skills
+.agents/
