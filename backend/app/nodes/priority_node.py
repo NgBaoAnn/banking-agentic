@@ -1,9 +1,3 @@
-"""
-Priority / Risk Detection Node.
-Uses rule-based logic (keywords + intent mapping) to classify whether a
-customer case is low, medium, or high priority.
-"""
-
 import logging
 from typing import List
 

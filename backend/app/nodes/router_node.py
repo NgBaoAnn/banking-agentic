@@ -1,13 +1,3 @@
-"""
-Router / Escalation Node — the final decision node of the workflow.
-Decides whether the system should:
-  - Send a reply directly to the customer
-  - Ask the customer for more information
-  - Escalate the case to a human support team
-
-The routing decision is based on the outputs of all previous nodes.
-"""
-
 import logging
 
 from app.core.schemas import (
@@ -111,7 +101,7 @@ class RouterNode:
             )
             return RoutingResult(action="escalate", reason="; ".join(reasons))
 
-        # ── Default: Send reply ─────────────────────────────────────
+        # ── Default: Send reply ───────
         reasons.append(
             f"All checks passed (intent confidence={intent_result.confidence:.2f}, "
             f"validation score={validation_result.score:.2f}, "

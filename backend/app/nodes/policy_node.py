@@ -1,9 +1,3 @@
-"""
-Policy Retrieval Node.
-Given the predicted intent, retrieves the relevant policy or guideline
-from the policies data store to ground the final response.
-"""
-
 import logging
 
 from app.core.schemas import PolicyResult

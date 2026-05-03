@@ -1,9 +1,3 @@
-"""
-Response Drafting Node.
-Calls Ollama (gpt-oss:20b) to generate a draft reply to the customer,
-taking into account the message, intent, priority, and retrieved policy.
-"""
-
 import json
 import logging
 

@@ -1,9 +1,3 @@
-"""
-Validation Node.
-Checks whether the generated draft response is acceptable before
-it is sent to the customer. Improves reliability and transparency.
-"""
-
 import logging
 from typing import List
 

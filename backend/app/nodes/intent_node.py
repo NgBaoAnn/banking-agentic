@@ -1,14 +1,3 @@
-"""
-Intent Detection Node — the core node of the agentic workflow.
-
-Calls the Intent Classification Service API (running on Google Colab)
-to classify the customer's banking intent using the fine-tuned
-ngbaoan/intent-banking model (LoRA adapter on Qwen2.5-7B).
-
-Set INTENT_SERVICE_URL to the public URL exposed by the Colab notebook
-(e.g., https://xxx.ngrok-free.app or https://xxx.a.pinggy.io).
-"""
-
 import logging
 
 import httpx

@@ -1,9 +1,3 @@
-"""
-Main workflow controller — the AI Agentic Pipeline orchestrator.
-Calls all nodes in the correct order and collects intermediate outputs
-so the workflow trace can be observed during testing.
-"""
-
 import logging
 import time
 
@@ -56,36 +50,36 @@ class Orchestrator:
 
         trace = WorkflowTrace()
 
-        # ── Step 1: Intent Detection ──────────────────────────────
+        # Step 1: Intent Detection 
         logger.info("[Orchestrator] Step 1/6: Intent Detection")
         intent_result = await self.intent_node.run(message)
         trace.intent = intent_result
 
-        # ── Step 2: Priority Detection ────────────────────────────
+        # Step 2: Priority Detection 
         logger.info("[Orchestrator] Step 2/6: Priority Detection")
         priority_result = await self.priority_node.run(message, intent_result)
         trace.priority = priority_result
 
-        # ── Step 3: Policy Retrieval ──────────────────────────────
+        # Step 3: Policy Retrieval 
         logger.info("[Orchestrator] Step 3/6: Policy Retrieval")
         policy_result = await self.policy_node.run(intent_result.intent)
         trace.policy = policy_result
 
-        # ── Step 4: Response Drafting ─────────────────────────────
+        # Step 4: Response Drafting ─
         logger.info("[Orchestrator] Step 4/6: Response Drafting")
         draft_result = await self.draft_node.run(
             message, intent_result, priority_result, policy_result
         )
         trace.draft = draft_result
 
-        # ── Step 5: Validation ────────────────────────────────────
+        # Step 5: Validation ──────
         logger.info("[Orchestrator] Step 5/6: Validation")
         validation_result = await self.validation_node.run(
             draft_result, intent_result, policy_result
         )
         trace.validation = validation_result
 
-        # ── Step 6: Routing ───────────────────────────────────────
+        # Step 6: Routing ─────────
         logger.info("[Orchestrator] Step 6/6: Routing")
         routing_result = await self.router_node.run(
             intent_result, priority_result, policy_result,
@@ -93,7 +87,7 @@ class Orchestrator:
         )
         trace.routing = routing_result
 
-        # ── Build final response ──────────────────────────────────
+        # ── Build final response ────
         final_response = self._build_final_response(
             draft_result.reply, routing_result.action, routing_result.reason
         )
@@ -121,7 +115,7 @@ class Orchestrator:
             return (
                 f"{draft_reply}\n\n"
                 "---\n"
-                "⚠️ We need additional information to fully resolve your issue. "
+                " We need additional information to fully resolve your issue. "
                 "Please provide the details mentioned above so we can assist you "
                 "more effectively."
             )
