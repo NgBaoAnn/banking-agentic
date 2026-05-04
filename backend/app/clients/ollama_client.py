@@ -78,6 +78,6 @@ class OllamaClient(BaseLLMClient):
         except httpx.HTTPStatusError as e:
             logger.error(f"Ollama HTTP error: {e.response.status_code}")
             raise
-        except Exception as e:
+        except httpx.RequestError as e:
             logger.error(f"Ollama request failed: {e}")
             raise

@@ -89,7 +89,7 @@ if send_btn and message.strip():
         except requests.exceptions.ConnectionError:
             st.error(" Cannot connect to backend. Is the API server running?")
             st.stop()
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             st.error(f" Error: {e}")
             st.stop()
 

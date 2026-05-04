@@ -8,6 +8,7 @@ from app.core.schemas import (
     PriorityResult,
     PolicyResult,
 )
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +92,7 @@ class DraftNode:
             logger.info(f"[DraftNode] Draft generated ({len(result.reply)} chars)")
             return result
 
-        except Exception as e:
+        except httpx.RequestError as e:
             logger.error(f"[DraftNode] LLM call failed: {e}")
             return self._fallback_draft(
                 message, intent_result, priority_result, policy_result

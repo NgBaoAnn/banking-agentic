@@ -111,7 +111,7 @@ class Orchestrator:
         """Compose the final response based on the routing decision."""
         if action == "reply":
             return draft_reply
-        elif action == "ask_more":
+        if action == "ask_more":
             return (
                 f"{draft_reply}\n\n"
                 "---\n"
@@ -119,7 +119,7 @@ class Orchestrator:
                 "Please provide the details mentioned above so we can assist you "
                 "more effectively."
             )
-        elif action == "escalate":
+        if action == "escalate":
             return (
                 "Thank you for reaching out. Your case has been identified as "
                 "requiring specialized attention.\n\n"
@@ -128,5 +128,5 @@ class Orchestrator:
                 "If this is urgent, please call our priority support line "
                 "at 1-800-BANK-HELP."
             )
-        else:
-            return draft_reply
+        
+        return draft_reply

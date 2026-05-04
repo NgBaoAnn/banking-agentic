@@ -69,7 +69,7 @@ class IntentNode:
             logger.error(f"[IntentNode] HTTP error from intent service: {e.response.status_code}")
             return self._fallback(f"HTTP error: {e.response.status_code}")
 
-        except Exception as e:
+        except httpx.RequestError as e:
             logger.error(f"[IntentNode] Failed to call intent service: {e}")
             return self._fallback(str(e))
 
