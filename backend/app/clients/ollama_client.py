@@ -26,6 +26,13 @@ class OllamaClient(BaseLLMClient):
         self.base_url = (base_url or settings.OLLAMA_BASE_URL).rstrip("/")
         self.model = model or settings.OLLAMA_MODEL
         self.timeout = timeout
+        self._client = None
+
+    @property
+    def client(self) -> httpx.AsyncClient:
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(timeout=self.timeout)
+        return self._client
 
     async def generate(self, prompt: str, **kwargs) -> str:
         """
@@ -57,11 +64,10 @@ class OllamaClient(BaseLLMClient):
         logger.info(f"Calling Ollama: model={model}, url={url}")
 
         try:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
-                response = await client.post(url, json=payload)
-                response.raise_for_status()
-                data = response.json()
-                content = data.get("message", {}).get("content", "")
+            response = await self.client.post(url, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            content = data.get("message", {}).get("content", "")
 
             logger.info(f"Ollama response received ({len(content)} chars)")
             return content

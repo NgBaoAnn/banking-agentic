@@ -17,6 +17,13 @@ class IntentNode:
     def __init__(self):
         self.service_url = settings.INTENT_SERVICE_URL.rstrip("/")
         self.timeout = 60.0
+        self._client = None
+
+    @property
+    def client(self) -> httpx.AsyncClient:
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(timeout=self.timeout)
+        return self._client
 
     async def run(self, message: str) -> IntentResult:
         """
@@ -33,13 +40,12 @@ class IntentNode:
         )
 
         try:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
-                response = await client.post(
-                    f"{self.service_url}/classify",
-                    json={"message": message},
-                )
-                response.raise_for_status()
-                data = response.json()
+            response = await self.client.post(
+                f"{self.service_url}/classify",
+                json={"message": message},
+            )
+            response.raise_for_status()
+            data = response.json()
 
             result = IntentResult(
                 intent=data.get("intent", "unknown"),
