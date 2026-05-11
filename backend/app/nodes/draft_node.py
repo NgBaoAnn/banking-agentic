@@ -139,6 +139,6 @@ class DraftNode:
         )
         return DraftResult(
             reply=reply,
-            missing_info=["Account number or customer ID for verification"],
+            missing_info=[],
             suggested_action="Send reply after verification",
         )

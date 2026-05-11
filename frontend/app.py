@@ -21,26 +21,24 @@ with st.sidebar:
     st.header("Settings")
     api_url = st.text_input("Backend API URL", value=API_BASE_URL)
     
-    st.header("Sample messages")
+    st.header("Test Cases")
     samples = [
-        "I tried to send money to my friend but the transfer failed.",
-        "My account has been blocked and I cannot access my funds!",
-        "I lost my card yesterday and I need a replacement.",
-        "What is the current exchange rate for USD to EUR?",
-        "I was charged twice for the same transaction. I need a refund.",
-        "I applied for a new card two weeks ago but haven't received it.",
-        "I noticed transactions I did not make. Someone stole my info!",
-        "I tried to top up my account but it failed.",
+        "[REPLY] What is the exchange rate for USD to EUR?",
+        "[ASK_MORE] I tried to send money but the transfer failed.",
+        "[ASK_MORE] I applied for a new card but haven't received it.",
+        "[ESCALATE] I lost my card yesterday and I need a replacement.",
+        "[ESCALATE] My card was compromised and there are charges I didn't make!",
     ]
     for sample in samples:
-        if st.button(sample[:60] + "...", key=sample):
-            st.session_state["input_message"] = sample
+        # Hide prefix when putting into chat box
+        if st.button(sample, key=sample):
+            st.session_state["input_message"] = sample.split("] ")[1]
 
 # ── Main Chat Interface ──────────────
 col1, col2 = st.columns([1, 1], gap="large")
 
 with col1:
-    st.subheader("Customer message", icon=":material/chat:")
+    st.subheader("Customer message")
     default_msg = st.session_state.get("input_message", "")
     message = st.text_area(
         "Enter your banking question:",
@@ -50,7 +48,7 @@ with col1:
         label_visibility="collapsed"
     )
 
-    send_btn = st.button("Send to AI agent", type="primary", use_container_width=True, icon=":material/send:")
+    send_btn = st.button("Send to AI agent", type="primary", use_container_width=True)
 
 if send_btn and message.strip():
     with st.spinner("Processing through AI pipeline..."):
@@ -63,10 +61,10 @@ if send_btn and message.strip():
             resp.raise_for_status()
             data = resp.json()
         except requests.exceptions.ConnectionError:
-            st.error("Cannot connect to backend. Is the API server running?", icon=":material/error:")
+            st.error("Cannot connect to backend. Is the API server running?")
             st.stop()
         except requests.exceptions.RequestException as e:
-            st.error(f"Error: {e}", icon=":material/error:")
+            st.error(f"Error: {e}")
             st.stop()
 
     # ── Display Results ───────────
@@ -74,21 +72,21 @@ if send_btn and message.strip():
     action = data.get("action", "unknown")
 
     with col2:
-        st.subheader("Final resolution", icon=":material/check_circle:")
+        st.subheader("Final resolution")
         
         # Final action badge
         action_color = {"reply": "green", "ask_more": "orange", "escalate": "red"}.get(action, "gray")
         st.markdown(f"**Action required:** :{action_color}-badge[{action.upper()}]")
         
         if action == "escalate":
-            st.error(data.get("final_response", ""), icon=":material/escalator_warning:")
+            st.error(data.get("final_response", ""))
         elif action == "ask_more":
-            st.warning(data.get("final_response", ""), icon=":material/contact_support:")
+            st.warning(data.get("final_response", ""))
         else:
-            st.success(data.get("final_response", ""), icon=":material/check_circle:")
+            st.success(data.get("final_response", ""))
 
     # ── Workflow Trace ────────────
-    st.subheader("Workflow trace", icon=":material/route:")
+    st.subheader("Workflow trace")
 
     trace_cols = st.columns(3)
 
@@ -117,7 +115,7 @@ if send_btn and message.strip():
         policy = trace.get("policy", {})
         st.markdown("**Step 3: Policy retrieval**")
         st.metric("Policy", policy.get("policy_title", "N/A"))
-        with st.expander("View policy details", icon=":material/policy:"):
+        with st.expander("View policy details"):
             st.write(policy.get("policy_text", ""))
             st.write(f"**Resolution:** {policy.get('typical_resolution', '')}")
 
@@ -127,7 +125,7 @@ if send_btn and message.strip():
     with trace_cols2[0].container(border=True):
         draft = trace.get("draft", {})
         st.markdown("**Step 4: Draft response**")
-        with st.expander("View draft", expanded=True, icon=":material/edit_document:"):
+        with st.expander("View draft", expanded=True):
             st.write(draft.get("reply", "No draft generated"))
         if draft.get("missing_info"):
             st.warning("Missing info: " + ", ".join(draft["missing_info"]))
@@ -142,7 +140,7 @@ if send_btn and message.strip():
         st.markdown(f":{valid_color}-badge[{valid_status}]")
         st.metric("Score", f"{validation.get('score', 0):.0%}")
         for issue in validation.get("issues", []):
-            st.error(f"• {issue}", icon=":material/error:")
+            st.error(f"• {issue}")
 
     # Node 6: Routing
     with trace_cols2[2].container(border=True):
@@ -153,4 +151,4 @@ if send_btn and message.strip():
         st.caption(routing.get("reason", ""))
 
 elif send_btn:
-    st.warning("Please enter a message first.", icon=":material/warning:")
+    st.warning("Please enter a message first.")
