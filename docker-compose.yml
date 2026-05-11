@@ -13,14 +13,14 @@ services:
       # Node 1: Intent Classification Service (chạy trên Colab)
       # Sau khi chạy notebook Intent-Service-Colab.ipynb,
       # copy URL ngrok/Pinggy vào đây:
-      INTENT_SERVICE_URL: https://REPLACE_WITH_INTENT_COLAB_URL
+      INTENT_SERVICE_URL: http://bsfmy-136-109-6-10.run.pinggy-free.link
       INTENT_MODEL_NAME: ngbaoan/intent-banking
 
       # -------------------------------------------------------
       # Node 4: Ollama LLM (chạy trên Colab)
       # Sau khi chạy notebook Ollama-Pinggy.ipynb,
       # copy URL Pinggy vào đây:
-      OLLAMA_BASE_URL: https://REPLACE_WITH_OLLAMA_COLAB_URL
+      OLLAMA_BASE_URL: http://litvn-34-125-187-71.run.pinggy-free.link
       OLLAMA_MODEL: gpt-oss:20b
     networks:
       - public_net
