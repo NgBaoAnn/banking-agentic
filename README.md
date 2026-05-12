@@ -42,50 +42,37 @@ Customer Message
 
 ### Prerequisites
 
-- Python 3.10+
-- GPU recommended for intent model (6-8 GB VRAM for 4-bit inference), or runs on CPU
-- Ollama running locally or via Google Colab + Pinggy
+- Docker and Docker Compose installed.
+- A Google account to run the Colab notebooks for the models.
 
-### 1. Start Ollama
+### 1. Start External Models via Google Colab
+Since the models require GPU resources, they are hosted on Google Colab and exposed via Pinggy tunnels.
+1. Open `notebooks/Intent-Service-Colab.ipynb` on Colab, run all cells, and copy the generated Pinggy URL.
+2. Open `notebooks/Ollama-Pinggy.ipynb` on Colab, run all cells, and copy the generated Pinggy URL.
 
-Option A - Local:
-```bash
-ollama pull gpt-oss:20b
-ollama serve
+### 2. Configure Environment Variables
+Open the `docker-compose.yml` file and replace the placeholder URLs with the Pinggy URLs you obtained from the Colab notebooks:
+```yaml
+    environment:
+      # Node 1: Intent Classification Service
+      INTENT_SERVICE_URL: http://<your-intent-pinggy-url>.run.pinggy-free.link
+      INTENT_MODEL_NAME: ngbaoan/intent-banking
+
+      # Node 4: Ollama LLM
+      OLLAMA_BASE_URL: http://<your-ollama-pinggy-url>.run.pinggy-free.link
+      OLLAMA_MODEL: gpt-oss:20b
 ```
 
-Option B - Google Colab + Pinggy:
-Open notebooks/Ollama-Pinggy.ipynb on Colab, run all cells, and copy the Pinggy public URL. Then set it as OLLAMA_BASE_URL below.
-
-### 2. Install & Run Backend
-
-```bash
-cd backend
-pip install -r requirements.txt
-export OLLAMA_BASE_URL=http://localhost:11434
-export OLLAMA_MODEL=gpt-oss:20b
-export INTENT_MODEL_NAME=ngbaoan/intent-banking
-python run.py
-```
-
-Backend will be available at: http://localhost:8000  
-Interactive API docs: http://localhost:8000/docs
-
-### 3. (Optional) Run Frontend
-
-```bash
-cd frontend
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-Frontend at: http://localhost:8501
-
-### Running with Docker
-
+### 3. Run with Docker Compose
+Build and run the entire application (Backend + Frontend) using Docker Compose:
 ```bash
 docker-compose up --build
 ```
+
+### 4. Access the Application
+- **Frontend (Streamlit Chat UI):** http://localhost:8501
+- **Backend API:** http://localhost:8000
+- **Interactive API docs:** http://localhost:8000/docs
 
 ## Project Structure
 
@@ -121,7 +108,7 @@ curl -X POST http://localhost:8000/api/chat \
 
 ## Video Demo
 
-[Video demo link - to be added]
+[Watch the Video Demo on Google Drive](https://drive.google.com/file/d/1oCl5iN5XTgb5VEvlFfI7MpyHn9EpEK9i/view?usp=drive_link)
 
 ## Author
 
