@@ -1,5 +1,5 @@
 """
-FastAPI application for the Banking AI-Agent backend.
+FastAPI application for the Banking AI-Agent API Gateway.
 Registers API routes and initializes the main server.
 """
 
@@ -11,6 +11,7 @@ from fastapi import Body, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.schemas import CustomerRequest, AgentResponse
+from app.core.settings import settings
 from app.agent.orchestrator import Orchestrator
 
 logging.basicConfig(
@@ -20,9 +21,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Banking AI-Agent",
-    description="AI agentic pipeline for banking customer support",
-    version="1.0.0",
+    title="Banking AI-Agent API Gateway",
+    description="API Gateway for the Banking AI agentic pipeline with gRPC-based intent detection",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -38,17 +39,35 @@ orchestrator = Orchestrator()
 
 @app.get("/health")
 def health_check() -> dict:
-    """Health check endpoint."""
-    return {"status": "ok", "service": "banking-ai-agent"}
+    """Check whether the system is running."""
+    return {"status": "ok", "service": "banking-ai-agent-gateway"}
 
 
-@app.post("/api/chat")
-async def chat(request: Annotated[CustomerRequest, Body()]) -> AgentResponse:
+@app.get("/config")
+def get_config() -> dict:
+    """Return the current system configuration."""
+    return {
+        "service": "banking-ai-agent-gateway",
+        "version": "2.0.0",
+        "intent_service": {
+            "type": "gRPC",
+            "host": settings.INTENT_SERVICE_HOST,
+            "port": settings.INTENT_SERVICE_PORT,
+        },
+        "ollama": {
+            "base_url": settings.OLLAMA_BASE_URL,
+            "model": settings.OLLAMA_MODEL,
+        },
+    }
+
+
+@app.post("/run-agent")
+async def run_agent(request: Annotated[CustomerRequest, Body()]) -> AgentResponse:
     """
-    Process a customer support message through the AI agentic pipeline.
+    Execute the full agentic workflow.
 
     The pipeline runs 6 nodes sequentially:
-    1. Intent Detection (fine-tuned ngbaoan/intent-banking model, loaded directly)
+    1. Intent Detection (via gRPC Intent Service)
     2. Priority / Risk Detection (rule-based)
     3. Policy Retrieval (lookup from policies.py)
     4. Response Drafting (LLM via Ollama gpt-oss:20b)
@@ -56,6 +75,16 @@ async def chat(request: Annotated[CustomerRequest, Body()]) -> AgentResponse:
     6. Routing (reply / ask_more / escalate)
 
     Returns the final response, action decision, and full workflow trace.
+    """
+    logger.info(f"Received run-agent request: '{request.message[:80]}...'")
+    response = await orchestrator.process(request.message)
+    return response
+
+
+@app.post("/api/chat")
+async def chat(request: Annotated[CustomerRequest, Body()]) -> AgentResponse:
+    """
+    Alias for /run-agent — kept for backward compatibility with frontend.
     """
     logger.info(f"Received chat request: '{request.message[:80]}...'")
     response = await orchestrator.process(request.message)
