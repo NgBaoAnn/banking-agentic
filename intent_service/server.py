@@ -42,11 +42,9 @@ class IntentServiceServicer(intent_service_pb2_grpc.IntentServiceServicer):
         logger.info(f"Received intent request: '{message[:80]}...'")
 
         try:
-            # Run the async intent node in the event loop
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            result = loop.run_until_complete(self.intent_node.run(message))
-            loop.close()
+            # Recreate IntentNode per request to avoid httpx loop closed issues
+            node = IntentNode()
+            result = asyncio.run(node.run(message))
 
             logger.info(
                 f"Intent result: intent='{result.intent}', "

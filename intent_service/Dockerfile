@@ -20,4 +20,4 @@ RUN make
 
 EXPOSE 50051
 
-CMD ["python", "server.py"]
+CMD ["python", "-u", "server.py"]
