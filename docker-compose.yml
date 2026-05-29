@@ -9,21 +9,29 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # -------------------------------------------------------
-      # Node 1: Intent Classification Service (chạy trên Colab)
-      # Sau khi chạy notebook Intent-Service-Colab.ipynb,
-      # copy URL ngrok/Pinggy vào đây:
-      INTENT_SERVICE_URL: http://bsfmy-136-109-6-10.run.pinggy-free.link
-      INTENT_MODEL_NAME: ngbaoan/intent-banking
-
-      # -------------------------------------------------------
-      # Node 4: Ollama LLM (chạy trên Colab)
-      # Sau khi chạy notebook Ollama-Pinggy.ipynb,
-      # copy URL Pinggy vào đây:
-      OLLAMA_BASE_URL: http://litvn-34-125-187-71.run.pinggy-free.link
-      OLLAMA_MODEL: gpt-oss:20b
+      INTENT_SERVICE_HOST: intent-service
+      INTENT_SERVICE_PORT: 50051
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gpt-oss:20b}
+    depends_on:
+      - intent-service
     networks:
       - public_net
+      - internal_net
+
+  intent-service:
+    build:
+      context: ./intent_service
+      dockerfile: Dockerfile
+    container_name: intent-service
+    ports:
+      - "50051:50051"
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      INTENT_MODEL_NAME: ${INTENT_MODEL_NAME:-gpt-oss:20b}
+      GRPC_PORT: 50051
+    networks:
+      - internal_net
 
   frontend:
     build:
@@ -42,3 +50,5 @@ services:
 networks:
   public_net:
     name: banking_public_net
+  internal_net:
+    name: banking_internal_net
